@@ -1,6 +1,6 @@
 {
   "name": "sequential-request",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Sequential requests using simple json/yaml structures",
   "main": "index.js",
   "types": "lib/index.d.ts",
@@ -13,6 +13,7 @@
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "test": "jest --config jestconfig.json",
+    "test:watch": "jest --config jestconfig.json --watch",
     "version": "npm run format && git add -A src"
   },
   "files": [
