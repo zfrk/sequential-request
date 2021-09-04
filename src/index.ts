@@ -19,7 +19,11 @@ export async function executeBatch(
     const url = `${config.BASE}${path}`;
     const params = {
       method,
-      headers: requestData.HEADERS,
+      headers: {
+        ...config.DEFAULT_HEADERS?.ALL,
+        ...config.DEFAULT_HEADERS?.[method],
+        ...requestData.HEADERS,
+      },
     };
 
     const responseContext = await handler(url, params).then((res) => res.json());

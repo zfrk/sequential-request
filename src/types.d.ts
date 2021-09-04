@@ -1,15 +1,28 @@
 interface OpConfig {
-  INITIAL_CONTEXT?: Object;
+  INITIAL_CONTEXT?: {};
   VERSION?: string;
   BASE?: string;
+  ENV?: {} | {}[];
+  DEFAULT_HEADERS?: {
+    ALL?: OpRequestHeaders;
+    GET?: OpRequestHeaders;
+    HEAD?: OpRequestHeaders;
+    POST?: OpRequestHeaders;
+    PUT?: OpRequestHeaders;
+    DELETE?: OpRequestHeaders;
+    PATCH?: OpRequestHeaders;
+    OPTIONS?: OpRequestHeaders;
+    CONNECT?: OpRequestHeaders;
+    TRACE?: OpRequestHeaders;
+  };
   DEFAULT_DELAY?: Number;
 }
 
 interface OpRequestBase {
   CHECK?: string;
-  HEADERS?: Object;
+  HEADERS?: OpRequestHeaders;
   DELAY?: Number;
-  SAVEAS?: string;
+  ASSIGN_TO?: string;
 }
 
 interface OpRequestGET extends OpRequestBase {
@@ -22,12 +35,12 @@ interface OpRequestHEAD extends OpRequestBase {
 
 interface OpRequestPOST extends OpRequestBase {
   POST: string;
-  BODY: Object | string;
+  BODY: {} | string;
 }
 
 interface OpRequestPUT extends OpRequestBase {
   PUT: string;
-  BODY: Object | string;
+  BODY: {} | string;
 }
 
 interface OpRequestDELETE extends OpRequestBase {
@@ -36,7 +49,7 @@ interface OpRequestDELETE extends OpRequestBase {
 
 interface OpRequestPATCH extends OpRequestBase {
   PATCH: string;
-  BODY: Object | string;
+  BODY: {} | string;
 }
 
 interface OpRequestOPTIONS extends OpRequestBase {
@@ -54,6 +67,14 @@ interface OpRequestTRACE extends OpRequestBase {
 interface OpRequestMethodData {
   method: OpRequestMethod;
   path: string;
+}
+
+interface OpRequestHeaders {
+  [id: string]: string;
+}
+
+interface OpResponseHeaders {
+  [id: string]: string;
 }
 
 type OpRequest =
