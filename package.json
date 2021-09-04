@@ -1,6 +1,6 @@
 {
   "name": "sequential-request",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Sequential requests using simple json/yaml structures",
   "main": "index.js",
   "types": "lib/index.d.ts",

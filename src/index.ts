@@ -4,7 +4,7 @@ import { getRequestMethod } from "./methodHelper";
 export async function executeBatch(
   config: OpConfig,
   requests: OpRequest[],
-  fetchHandler: OpRequestHandler,
+  fetchHandler?: OpRequestHandler,
 ): Promise<any> {
   const handler = fetchHandler || globalThis.fetch || fetch;
   const initialContext = { ...config.INITIAL_CONTEXT };
@@ -13,8 +13,12 @@ export async function executeBatch(
     return initialContext;
   }
 
-  return (async function handleRequest(currentContext) {
+  return (async function handleRequest(currentContext): Promise<{}> {
     const requestData = requests[counter++];
+    if (!requestData) {
+      return currentContext;
+    }
+
     const { method, path } = getRequestMethod(requestData);
     const url = `${config.BASE}${path}`;
     const params = {
@@ -28,6 +32,6 @@ export async function executeBatch(
 
     const responseContext = await handler(url, params).then((res) => res.json());
 
-    return { ...currentContext, ...responseContext };
+    return handleRequest({ ...currentContext, ...responseContext });
   })(initialContext);
 }
