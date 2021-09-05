@@ -19,10 +19,11 @@ export async function executeBatch(
       return currentContext;
     }
 
-    const { method, path } = getRequestMethod(requestData);
+    const { method, path, body } = getRequestMethod(requestData);
     const url = `${config.BASE}${path}`;
     const params = {
       method,
+      body,
       headers: {
         ...config.DEFAULT_HEADERS?.ALL,
         ...config.DEFAULT_HEADERS?.[method],

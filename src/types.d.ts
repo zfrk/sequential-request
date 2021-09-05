@@ -35,12 +35,12 @@ interface OpRequestHEAD extends OpRequestBase {
 
 interface OpRequestPOST extends OpRequestBase {
   POST: string;
-  BODY: {} | string;
+  BODY?: {} | string;
 }
 
 interface OpRequestPUT extends OpRequestBase {
   PUT: string;
-  BODY: {} | string;
+  BODY?: {} | string;
 }
 
 interface OpRequestDELETE extends OpRequestBase {
@@ -49,7 +49,7 @@ interface OpRequestDELETE extends OpRequestBase {
 
 interface OpRequestPATCH extends OpRequestBase {
   PATCH: string;
-  BODY: {} | string;
+  BODY?: {} | string;
 }
 
 interface OpRequestOPTIONS extends OpRequestBase {
@@ -67,6 +67,7 @@ interface OpRequestTRACE extends OpRequestBase {
 interface OpRequestMethodData {
   method: OpRequestMethod;
   path: string;
+  body?: string;
 }
 
 interface OpRequestHeaders {
