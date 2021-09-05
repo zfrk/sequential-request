@@ -1,6 +1,6 @@
 {
   "name": "sequential-request",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Sequential requests using simple json/yaml structures",
   "main": "index.js",
   "types": "lib/index.d.ts",
@@ -47,6 +47,7 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
+    "jsonata": "^1.8.5",
     "node-fetch": "^2.6.1"
   }
 }

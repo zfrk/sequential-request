@@ -1,5 +1,5 @@
 interface OpConfig {
-  INITIAL_CONTEXT?: {};
+  INITIAL_CONTEXT?: OpContext;
   VERSION?: string;
   BASE?: string;
   ENV?: {} | {}[];
@@ -16,6 +16,10 @@ interface OpConfig {
     TRACE?: OpRequestHeaders;
   };
   DEFAULT_DELAY?: Number;
+}
+
+interface OpContext {
+  [id: string]: any;
 }
 
 interface OpRequestBase {
@@ -101,3 +105,5 @@ declare type OpRequestMethod =
   | "PATCH"
   | "TRACE"
   | "GET";
+
+declare type OpContextReplacer = (key: string, value: any) => any;

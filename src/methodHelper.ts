@@ -34,12 +34,17 @@ function isMethodTRACE(request: OpRequest): request is OpRequestTRACE {
   return !!(request as OpRequestTRACE).TRACE;
 }
 
-export function getRequestMethod(request: OpRequest): OpRequestMethodData {
+export function getRequestMethod(
+  request: OpRequest,
+  replacer: OpContextReplacer,
+): OpRequestMethodData {
   if (isMethodPOST(request)) {
-    const body = typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY);
+    const body =
+      typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY, replacer);
     return { method: "POST", path: request.POST, body };
   } else if (isMethodPUT(request)) {
-    const body = typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY);
+    const body =
+      typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY, replacer);
     return { method: "PUT", path: request.PUT, body };
   } else if (isMethodDELETE(request)) {
     return { method: "DELETE", path: request.DELETE };
@@ -50,7 +55,8 @@ export function getRequestMethod(request: OpRequest): OpRequestMethodData {
   } else if (isMethodCONNECT(request)) {
     return { method: "CONNECT", path: request.CONNECT };
   } else if (isMethodPATCH(request)) {
-    const body = typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY);
+    const body =
+      typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY, replacer);
     return { method: "PATCH", path: request.PATCH, body };
   } else if (isMethodTRACE(request)) {
     return { method: "TRACE", path: request.TRACE };
