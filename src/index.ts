@@ -13,11 +13,14 @@ export async function executeBatch(
   const handler = fetchHandler || globalThis.fetch || fetch;
   const initialContext = { ...config.INITIAL_CONTEXT };
   let counter = 0;
+
   if (requests.length < 1) {
     return initialContext;
   }
 
-  return (async function handleRequest(currentContext: OpContext): Promise<{}> {
+  return handleRequest(initialContext);
+
+  async function handleRequest(currentContext: OpContext): Promise<{}> {
     const requestData = requests[counter++];
     if (!requestData) {
       return currentContext;
@@ -45,7 +48,7 @@ export async function executeBatch(
     const responseContext = await handler(url, params).then((res) => res.json());
 
     return handleRequest({ ...currentContext, ...responseContext });
-  })(initialContext);
+  }
 }
 
 function createReplacer(context: OpContext, environment: {}) {
