@@ -5,7 +5,7 @@ import jsonata = require("jsonata");
 const SIMPLE_BINDING = /^\$\.([.\w])+$/m;
 const COMPLEX_BINDING = /^= .{1,}/m;
 
-export async function executeBatch(
+export default async function seqreq(
   config: OpConfig,
   requests: OpRequest[],
   fetchHandler?: OpRequestHandler,
@@ -29,7 +29,7 @@ export async function executeBatch(
     const replacer = createReplacer(currentContext, {});
 
     const { method, path, body } = getRequestMethod(requestData, replacer);
-    const url = `${config.BASE}${path}`;
+    const url = `${config.BASE || ""}${path}`;
     const headers = bindHeaders(
       {
         ...config.DEFAULT_HEADERS?.ALL,

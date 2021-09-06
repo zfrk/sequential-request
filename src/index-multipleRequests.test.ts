@@ -1,4 +1,4 @@
-import { executeBatch } from ".";
+import seqreq from ".";
 
 test("Two simple get request", async () => {
   const config: OpConfig = {
@@ -26,7 +26,7 @@ test("Two simple get request", async () => {
     });
   });
 
-  const context = await executeBatch(config, operations, myFetch);
+  const context = await seqreq(config, operations, myFetch);
   expect(myFetch).toBeCalledTimes(2);
   expect(context).toEqual({ _1: "myID: _1", _2: "myID: _2" });
 });

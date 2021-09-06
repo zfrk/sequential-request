@@ -1,4 +1,4 @@
-import { executeBatch } from ".";
+import seqreq from ".";
 
 const myFetch = jest.fn(() =>
   Promise.resolve({
@@ -28,7 +28,7 @@ test("Without initial context", async () => {
       GET: "/todos/1",
     },
   ];
-  const response = await executeBatch(config, operations, myFetch);
+  const response = await seqreq(config, operations, myFetch);
 
   expect(response).toEqual({
     id: 1,
@@ -53,7 +53,7 @@ test("Deep initial context", async () => {
       GET: "/todos/1",
     },
   ];
-  const response = await executeBatch(config, operations, myFetch);
+  const response = await seqreq(config, operations, myFetch);
 
   expect(response).toEqual({
     test: "deneme",
@@ -79,7 +79,7 @@ test("Overwrite existing data", async () => {
       GET: "/todos/1",
     },
   ];
-  const response = await executeBatch(config, operations, myFetch);
+  const response = await seqreq(config, operations, myFetch);
 
   expect(response).toEqual({
     id: 1,
