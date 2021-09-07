@@ -5,7 +5,7 @@ import jsonata = require("jsonata");
 const SIMPLE_BINDING = /^\$\.([.\w])+$/m;
 const COMPLEX_BINDING = /^= .{1,}/m;
 
-export async function executeBatch(
+export default async function seqreq(
   config: OpConfig,
   requests: OpRequest[],
   fetchHandler?: OpRequestHandler,
@@ -13,11 +13,14 @@ export async function executeBatch(
   const handler = fetchHandler || globalThis.fetch || fetch;
   const initialContext = { ...config.INITIAL_CONTEXT };
   let counter = 0;
+
   if (requests.length < 1) {
     return initialContext;
   }
 
-  return (async function handleRequest(currentContext: OpContext): Promise<{}> {
+  return handleRequest(initialContext);
+
+  async function handleRequest(currentContext: OpContext): Promise<{}> {
     const requestData = requests[counter++];
     if (!requestData) {
       return currentContext;
@@ -26,7 +29,7 @@ export async function executeBatch(
     const replacer = createReplacer(currentContext, {});
 
     const { method, path, body } = getRequestMethod(requestData, replacer);
-    const url = `${config.BASE}${path}`;
+    const url = `${config.BASE || ""}${path}`;
     const headers = bindHeaders(
       {
         ...config.DEFAULT_HEADERS?.ALL,
@@ -45,7 +48,7 @@ export async function executeBatch(
     const responseContext = await handler(url, params).then((res) => res.json());
 
     return handleRequest({ ...currentContext, ...responseContext });
-  })(initialContext);
+  }
 }
 
 function createReplacer(context: OpContext, environment: {}) {
