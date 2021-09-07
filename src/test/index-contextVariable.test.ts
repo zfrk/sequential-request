@@ -1,7 +1,7 @@
-import seqreq from ".";
+import  { SequentialRequest } from "..";
 
 test("Context variable in body", async () => {
-  const config: OpConfig = {
+  const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE: `https://someurl.com`,
     INITIAL_CONTEXT: {
@@ -37,12 +37,14 @@ test("Context variable in body", async () => {
     });
   });
 
-  await seqreq(config, operations, myFetch);
+  const seqreq = new SequentialRequest( config,operations,myFetch);
+
+  await seqreq.execute();
   expect(myFetch).toBeCalledTimes(2);
 });
 
 test("Context variable in request headers", async () => {
-  const config: OpConfig = {
+  const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE: `https://someurl.com`,
     DEFAULT_HEADERS: {
@@ -81,6 +83,8 @@ test("Context variable in request headers", async () => {
     });
   });
 
-  await seqreq(config, operations, myFetch);
+  const seqreq = new SequentialRequest( config,operations,myFetch);
+
+  await seqreq.execute();
   expect(myFetch).toBeCalledTimes(1);
 });

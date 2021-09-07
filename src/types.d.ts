@@ -1,80 +1,80 @@
-interface OpConfig {
-  INITIAL_CONTEXT?: OpContext;
+interface IOpConfig {
+  INITIAL_CONTEXT?: IOpContext;
   VERSION?: string;
   BASE?: string;
   ENV?: {} | {}[];
   DEFAULT_HEADERS?: {
-    ALL?: OpRequestHeaders;
-    GET?: OpRequestHeaders;
-    HEAD?: OpRequestHeaders;
-    POST?: OpRequestHeaders;
-    PUT?: OpRequestHeaders;
-    DELETE?: OpRequestHeaders;
-    PATCH?: OpRequestHeaders;
-    OPTIONS?: OpRequestHeaders;
-    CONNECT?: OpRequestHeaders;
-    TRACE?: OpRequestHeaders;
+    ALL?: IOpRequestHeaders;
+    GET?: IOpRequestHeaders;
+    HEAD?: IOpRequestHeaders;
+    POST?: IOpRequestHeaders;
+    PUT?: IOpRequestHeaders;
+    DELETE?: IOpRequestHeaders;
+    PATCH?: IOpRequestHeaders;
+    OPTIONS?: IOpRequestHeaders;
+    CONNECT?: IOpRequestHeaders;
+    TRACE?: IOpRequestHeaders;
   };
   DEFAULT_DELAY?: Number;
 }
 
-interface OpContext {
+interface IOpContext {
   [id: string]: any;
 }
 
-interface OpRequestBase {
+interface IOpRequestBase {
   CHECK?: string;
-  HEADERS?: OpRequestHeaders;
+  HEADERS?: IOpRequestHeaders;
   DELAY?: Number;
   ASSIGN_TO?: string;
 }
 
-interface OpRequestGET extends OpRequestBase {
+interface IOpRequestGET extends IOpRequestBase {
   GET: string;
 }
 
-interface OpRequestHEAD extends OpRequestBase {
+interface IOpRequestHEAD extends IOpRequestBase {
   HEAD: string;
 }
 
-interface OpRequestPOST extends OpRequestBase {
+interface IOpRequestPOST extends IOpRequestBase {
   POST: string;
   BODY?: {} | string;
 }
 
-interface OpRequestPUT extends OpRequestBase {
+interface IOpRequestPUT extends IOpRequestBase {
   PUT: string;
   BODY?: {} | string;
 }
 
-interface OpRequestDELETE extends OpRequestBase {
+interface IOpRequestDELETE extends IOpRequestBase {
   DELETE: string;
 }
 
-interface OpRequestPATCH extends OpRequestBase {
+interface IOpRequestPATCH extends IOpRequestBase {
   PATCH: string;
   BODY?: {} | string;
 }
 
-interface OpRequestOPTIONS extends OpRequestBase {
+interface IOpRequestOPTIONS extends IOpRequestBase {
   OPTIONS: string;
 }
 
-interface OpRequestCONNECT extends OpRequestBase {
+interface IOpRequestCONNECT extends IOpRequestBase {
   CONNECT: string;
 }
 
-interface OpRequestTRACE extends OpRequestBase {
+interface IOpRequestTRACE extends IOpRequestBase {
   TRACE: string;
 }
 
-interface OpRequestMethodData {
+interface IOpRequestMethodData {
   method: OpRequestMethod;
   path: string;
   body?: string;
 }
 
-interface OpRequestHeaders {
+interface IOpRequestHeaders {
   [id: string]: string;
 }
 
@@ -83,15 +83,15 @@ interface OpResponseHeaders {
 }
 
 type OpRequest =
-  | OpRequestGET
-  | OpRequestHEAD
-  | OpRequestPOST
-  | OpRequestPUT
-  | OpRequestDELETE
-  | OpRequestPATCH
-  | OpRequestOPTIONS
-  | OpRequestCONNECT
-  | OpRequestTRACE;
+  | IOpRequestGET
+  | IOpRequestHEAD
+  | IOpRequestPOST
+  | IOpRequestPUT
+  | IOpRequestDELETE
+  | IOpRequestPATCH
+  | IOpRequestOPTIONS
+  | IOpRequestCONNECT
+  | IOpRequestTRACE;
 
 declare type OpRequestHandler = (url: string, params: any) => Promise<any>;
 

@@ -1,4 +1,4 @@
-import seqreq from ".";
+import  { SequentialRequest } from "..";
 
 const myFetch = jest.fn(() =>
   Promise.resolve({
@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 test("Without initial context", async () => {
-  const config: OpConfig = {
+  const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE: `https://someurl.com`,
   };
@@ -28,7 +28,10 @@ test("Without initial context", async () => {
       GET: "/todos/1",
     },
   ];
-  const response = await seqreq(config, operations, myFetch);
+
+  const seqreq = new SequentialRequest( config,operations,myFetch);
+  
+  const response = await seqreq.execute();
 
   expect(response).toEqual({
     id: 1,
@@ -37,7 +40,7 @@ test("Without initial context", async () => {
 });
 
 test("Deep initial context", async () => {
-  const config: OpConfig = {
+  const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE: `https://someurl.com`,
     INITIAL_CONTEXT: {
@@ -53,7 +56,9 @@ test("Deep initial context", async () => {
       GET: "/todos/1",
     },
   ];
-  const response = await seqreq(config, operations, myFetch);
+
+  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const response = await  await seqreq.execute();
 
   expect(response).toEqual({
     test: "deneme",
@@ -66,7 +71,7 @@ test("Deep initial context", async () => {
 });
 
 test("Overwrite existing data", async () => {
-  const config: OpConfig = {
+  const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE: `https://someurl.com`,
     INITIAL_CONTEXT: {
@@ -79,7 +84,9 @@ test("Overwrite existing data", async () => {
       GET: "/todos/1",
     },
   ];
-  const response = await seqreq(config, operations, myFetch);
+
+  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const response = await seqreq.execute();
 
   expect(response).toEqual({
     id: 1,
