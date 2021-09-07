@@ -1,4 +1,4 @@
-import { executeBatch } from ".";
+import seqreq from ".";
 
 test("Context variable in body", async () => {
   const config: OpConfig = {
@@ -37,7 +37,7 @@ test("Context variable in body", async () => {
     });
   });
 
-  await executeBatch(config, operations, myFetch);
+  await seqreq(config, operations, myFetch);
   expect(myFetch).toBeCalledTimes(2);
 });
 
@@ -81,6 +81,6 @@ test("Context variable in request headers", async () => {
     });
   });
 
-  await executeBatch(config, operations, myFetch);
+  await seqreq(config, operations, myFetch);
   expect(myFetch).toBeCalledTimes(1);
 });

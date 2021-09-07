@@ -1,4 +1,4 @@
-import { executeBatch } from ".";
+import seqreq from ".";
 
 test("Check params", async () => {
   const config: OpConfig = {
@@ -33,7 +33,7 @@ test("Check params", async () => {
     });
   });
 
-  await executeBatch(config, operations, myFetch);
+  await seqreq(config, operations, myFetch);
   expect(myFetch).toBeCalledTimes(1);
 });
 
@@ -85,6 +85,6 @@ test("Config headers params", async () => {
     });
   });
 
-  await executeBatch(config, operations, myFetch);
+  await seqreq(config, operations, myFetch);
   expect(myFetch).toBeCalledTimes(1);
 });

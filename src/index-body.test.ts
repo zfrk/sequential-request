@@ -1,4 +1,4 @@
-import { executeBatch } from ".";
+import seqreq from ".";
 
 test("Two simple get request", async () => {
   const config: OpConfig = {
@@ -32,6 +32,6 @@ test("Two simple get request", async () => {
     });
   });
 
-  await executeBatch(config, operations, myFetch);
+  await seqreq(config, operations, myFetch);
   expect(myFetch).toBeCalledTimes(2);
 });
