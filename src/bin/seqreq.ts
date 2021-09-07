@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import seqreq from "../";
+import { SequentialRequest } from "../";
 import yargs from "yargs";
 import fetch from "node-fetch";
 import { hideBin } from "yargs/helpers";
@@ -19,7 +19,8 @@ async function main(params: any) {
     const config = doc[0] as IOpConfig;
     const requests = doc.slice(1) as OpRequest[];
 
-    const resultContext = await seqreq(config, requests, fetch);
+    const seqreq = new SequentialRequest( config,requests,fetch);
+    const resultContext = await seqreq.execute();
 
     // tslint:disable-next-line:no-console
     console.log(resultContext);
