@@ -1,5 +1,5 @@
 
-export abstract class Batch{
+export abstract class Request{
 
   protected config: OpConfig ;
   protected requests: OpRequest[];

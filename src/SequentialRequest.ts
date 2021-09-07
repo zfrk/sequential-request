@@ -1,7 +1,7 @@
 import jsonata = require('jsonata');
-import { Batch } from './Betch';
+import { Request } from './Request';
 import { getRequestMethod } from './methodHelper';
-class RunBatch extends Batch {
+class SequentialRequest extends Request {
 
   constructor(
     config: OpConfig,
