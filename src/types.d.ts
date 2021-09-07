@@ -68,7 +68,7 @@ interface IOpRequestTRACE extends IOpRequestBase {
   TRACE: string;
 }
 
-interface OpRequestMethodData {
+interface IOpRequestMethodData {
   method: OpRequestMethod;
   path: string;
   body?: string;
