@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { getRequestMethod } from "./methodHelper";
 import jsonata = require("jsonata");
 
@@ -8,9 +7,8 @@ const COMPLEX_BINDING = /^= .{1,}/m;
 export default async function seqreq(
   config: OpConfig,
   requests: OpRequest[],
-  fetchHandler?: OpRequestHandler,
+  fetchHandler: OpRequestHandler,
 ): Promise<any> {
-  const handler = fetchHandler || globalThis.fetch || fetch;
   const initialContext = { ...config.INITIAL_CONTEXT };
   let counter = 0;
 
@@ -45,8 +43,16 @@ export default async function seqreq(
       headers,
     };
 
-    const responseContext = await handler(url, params).then((res) => res.json());
+    const response: Response = await fetchHandler(url, params);
+    let responseContext;
 
+    try {
+      responseContext = await response.text();
+      responseContext = JSON.parse(responseContext);
+    } catch (e: any) {
+      throw new Error("Error converting json => " + responseContext);
+    }
+    responseContext.RESPONSE_HEADERS = response.headers;
     return handleRequest({ ...currentContext, ...responseContext });
   }
 }

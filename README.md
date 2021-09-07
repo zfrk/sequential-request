@@ -1,6 +1,7 @@
 # sequential-request
 
 ## Usage
+
 You can be helpful to install it globally:
 
 ```sh
@@ -11,17 +12,20 @@ seqreq myfile.yml
 ```
 
 But you can use it even without installing:
+
 ```sh
 npx seqreq myfile.yml
 ```
 
 ## YAML File
+
 A sample file would look like this:
+
 ```yml
 - VERSION: 0.0.1
   HEADERS:
     GET:
-      content-type: application/json
+      Accept: application/json
 
 - GET: https://jsonplaceholder.typicode.com/todos/3
 

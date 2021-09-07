@@ -26,7 +26,7 @@ interface OpRequestBase {
   CHECK?: string;
   HEADERS?: OpRequestHeaders;
   DELAY?: Number;
-  ASSIGN_TO?: string;
+  SET?: string;
 }
 
 interface OpRequestGET extends OpRequestBase {
