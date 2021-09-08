@@ -26,7 +26,7 @@ interface IOpRequestBase {
   CHECK?: string;
   HEADERS?: IOpRequestHeaders;
   DELAY?: Number;
-  ASSIGN_TO?: string;
+  SET?: string;
 }
 
 interface IOpRequestGET extends IOpRequestBase {

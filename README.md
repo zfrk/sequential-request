@@ -29,7 +29,7 @@ A sample file would look like this:
 - VERSION: 0.0.1
   HEADERS:
     GET:
-      content-type: application/json
+      Accept: application/json
 
 - GET: https://jsonplaceholder.typicode.com/todos/3
 
