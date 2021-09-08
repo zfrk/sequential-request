@@ -1,7 +1,7 @@
-import seqreq from ".";
+import  { SequentialRequest } from "..";
 
 test("Two simple get request", async () => {
-  const config: OpConfig = {
+  const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE: `https://someurl.com`,
   };
@@ -26,7 +26,9 @@ test("Two simple get request", async () => {
     });
   });
 
-  const context = await seqreq(config, operations, myFetch);
+  const seqreq = new SequentialRequest( config,operations,myFetch);
+
+  const context = await seqreq.execute();
   expect(myFetch).toBeCalledTimes(2);
   expect(context).toEqual({ _1: "myID: _1", _2: "myID: _2" });
 });

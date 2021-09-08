@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import seqreq from "../";
+import { SequentialRequest } from "../";
 import yargs from "yargs";
 import fetch from "node-fetch";
 import { hideBin } from "yargs/helpers";
@@ -16,10 +16,11 @@ main(argv);
 async function main(params: any) {
   try {
     const doc = yaml.load(fs.readFileSync(params._[0], "utf8")) as any[];
-    const config = doc[0] as OpConfig;
+    const config = doc[0] as IOpConfig;
     const requests = doc.slice(1) as OpRequest[];
 
-    const resultContext = await seqreq(config, requests, fetch);
+    const seqreq = new SequentialRequest( config,requests,fetch);
+    const resultContext = await seqreq.execute();
 
     // tslint:disable-next-line:no-console
     console.log(resultContext);

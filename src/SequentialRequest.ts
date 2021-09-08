@@ -1,10 +1,10 @@
 import jsonata = require('jsonata');
-import { Batch } from './Betch';
+import { Request } from './Request';
 import { getRequestMethod } from './methodHelper';
-class RunBatch extends Batch {
+export class SequentialRequest extends Request {
 
   constructor(
-    config: OpConfig,
+    config: IOpConfig,
     requests: OpRequest[],
     fetchHandler?: OpRequestHandler){
     
@@ -22,7 +22,7 @@ class RunBatch extends Batch {
 
   }
 
-  protected async handleRequest(currentContext: OpContext) : Promise<{}> {
+  protected async handleRequest(currentContext: IOpContext) : Promise<{}> {
     const requestData = this.requests[this.counter++];
     if (!requestData) {
       return currentContext;
@@ -52,7 +52,7 @@ class RunBatch extends Batch {
     return this.handleRequest({ ...currentContext, ...responseContext });
   }
 
-  private createReplacer(context: OpContext, environment: {}) {
+  private createReplacer(context: IOpContext, environment: {}) {
     return (k: string, v: any) => {
       if (typeof v === "string" && v.length > 2) {
         let expression;
@@ -70,7 +70,7 @@ class RunBatch extends Batch {
     };
   }
   
-  private bindHeaders(headers: OpRequestHeaders, replacer: OpContextReplacer) {
+  private bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
     return Object.entries(headers)
       .map(([key, value]) => [key, replacer(key, value)])
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});

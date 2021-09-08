@@ -1,7 +1,7 @@
 
-export abstract class Batch{
+export abstract class Request{
 
-  protected config: OpConfig ;
+  protected config: IOpConfig ;
   protected requests: OpRequest[];
   protected fetchHandler:OpRequestHandler | undefined;
   protected counter = 0;
@@ -16,9 +16,9 @@ export abstract class Batch{
      * @param ***** Some Info about param
      */
      protected constructor(  
-      config: OpConfig,
+      config: IOpConfig,
       requests: OpRequest[],
-      fetchHandler?: OpRequestHandler) {
+      fetchHandler?: OpRequestHandler){
 
         this.config = config;
         this.requests = requests;
@@ -38,7 +38,7 @@ export abstract class Batch{
      * @returns Promise<{}>
      * @protected
      */
-   protected abstract handleRequest(currentContext: OpContext): Promise<{}> ;
+   protected abstract handleRequest(currentContext: IOpContext): Promise<{}> ;
 
   
 
