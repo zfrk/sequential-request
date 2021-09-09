@@ -2,8 +2,8 @@
 
 ### Status
 
-```markdown
-![CI Status](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/ciact.yml/badge.svg)
+```
+![CI Status](https://github.com/zfrk/sequential-request/actions/workflows/ciact.yml/badge.svg)
 ```
 
 ## Usage
