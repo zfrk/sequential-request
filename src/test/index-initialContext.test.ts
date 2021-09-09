@@ -1,4 +1,4 @@
-import  { SequentialRequest } from "..";
+import { SequentialRequest } from "..";
 
 const myFetch = jest.fn(() =>
   Promise.resolve({
@@ -23,14 +23,14 @@ test("Without initial context", async () => {
     BASE: `https://someurl.com`,
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
     },
   ];
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
-  
+  const seqreq = new SequentialRequest(config, operations, myFetch);
+
   const response = await seqreq.execute();
 
   expect(response).toEqual({
@@ -51,14 +51,14 @@ test("Deep initial context", async () => {
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
     },
   ];
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
-  const response = await  await seqreq.execute();
+  const seqreq = new SequentialRequest(config, operations, myFetch);
+  const response = await await seqreq.execute();
 
   expect(response).toEqual({
     test: "deneme",
@@ -79,13 +79,13 @@ test("Overwrite existing data", async () => {
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
     },
   ];
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
   const response = await seqreq.execute();
 
   expect(response).toEqual({

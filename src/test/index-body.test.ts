@@ -1,4 +1,4 @@
-import  { SequentialRequest } from "..";
+import { SequentialRequest } from "..";
 
 test("Two simple get request", async () => {
   const config: IOpConfig = {
@@ -6,7 +6,7 @@ test("Two simple get request", async () => {
     BASE: `https://someurl.com`,
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       POST: "/type/string",
       BODY: '{"test":"deneme"}',
@@ -32,7 +32,7 @@ test("Two simple get request", async () => {
     });
   });
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(2);

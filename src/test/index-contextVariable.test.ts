@@ -1,4 +1,4 @@
-import  { SequentialRequest } from "..";
+import { SequentialRequest } from "..";
 
 test("Context variable in body", async () => {
   const config: IOpConfig = {
@@ -9,7 +9,7 @@ test("Context variable in body", async () => {
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       POST: "/type/simple/binding",
       BODY: {
@@ -37,7 +37,7 @@ test("Context variable in body", async () => {
     });
   });
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(2);
@@ -58,7 +58,7 @@ test("Context variable in request headers", async () => {
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/simpleBinding",
       HEADERS: {
@@ -83,7 +83,7 @@ test("Context variable in request headers", async () => {
     });
   });
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(1);

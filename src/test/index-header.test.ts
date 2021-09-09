@@ -1,4 +1,4 @@
-import  { SequentialRequest } from "..";
+import { SequentialRequest } from "..";
 
 test("Check params", async () => {
   const config: IOpConfig = {
@@ -6,7 +6,7 @@ test("Check params", async () => {
     BASE: `https://someurl.com`,
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
       HEADERS: {
@@ -33,7 +33,7 @@ test("Check params", async () => {
     });
   });
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(1);
@@ -55,7 +55,7 @@ test("Config headers params", async () => {
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
       HEADERS: {
@@ -86,7 +86,7 @@ test("Config headers params", async () => {
       status: 200,
     });
   });
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(1);

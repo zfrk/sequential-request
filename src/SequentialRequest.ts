@@ -1,28 +1,21 @@
-import jsonata = require('jsonata');
-import { Request } from './Request';
-import { getRequestMethod } from './methodHelper';
+import jsonata = require("jsonata");
+import { Request } from "./Request";
+import { getRequestMethod } from "./methodHelper";
 export class SequentialRequest extends Request {
-
-  constructor(
-    config: IOpConfig,
-    requests: OpRequest[],
-    fetchHandler?: OpRequestHandler){
-    
-      super(config,requests,fetchHandler);
+  constructor(config: IOpConfig, requests: IOpRequest[], fetchHandler?: OpRequestHandler) {
+    super(config, requests, fetchHandler);
   }
 
-  public async execute() : Promise<any> {
-
+  public async execute(): Promise<any> {
     const initialContext = { ...this.config.INITIAL_CONTEXT };
     if (this.requests.length < 1) {
       return initialContext;
     }
 
     return await this.handleRequest(initialContext);
-
   }
 
-  protected async handleRequest(currentContext: IOpContext) : Promise<{}> {
+  protected async handleRequest(currentContext: IOpContext): Promise<{}> {
     const requestData = this.requests[this.counter++];
     if (!requestData) {
       return currentContext;
@@ -69,11 +62,10 @@ export class SequentialRequest extends Request {
       return v;
     };
   }
-  
+
   private bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
     return Object.entries(headers)
       .map(([key, value]) => [key, replacer(key, value)])
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
   }
-
 }

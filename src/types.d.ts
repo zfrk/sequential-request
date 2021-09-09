@@ -78,11 +78,11 @@ interface IOpRequestHeaders {
   [id: string]: string;
 }
 
-interface OpResponseHeaders {
+interface IOpResponseHeaders {
   [id: string]: string;
 }
 
-type OpRequest =
+type IOpRequest =
   | IOpRequestGET
   | IOpRequestHEAD
   | IOpRequestPOST
