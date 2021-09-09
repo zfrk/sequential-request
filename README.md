@@ -2,9 +2,7 @@
 
 ### Status
 
-```
 ![CI Status](https://github.com/zfrk/sequential-request/actions/workflows/ciact.yml/badge.svg)
-```
 
 ## Usage
 
