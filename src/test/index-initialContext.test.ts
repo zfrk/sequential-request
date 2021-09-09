@@ -20,7 +20,7 @@ beforeEach(() => {
 test("Without initial context", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
   };
 
   const operations: IOpRequest[] = [
@@ -42,7 +42,7 @@ test("Without initial context", async () => {
 test("Deep initial context", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
     INITIAL_CONTEXT: {
       test: "deneme",
       a: {
@@ -73,7 +73,7 @@ test("Deep initial context", async () => {
 test("Overwrite existing data", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
     INITIAL_CONTEXT: {
       id: "xyz",
     },

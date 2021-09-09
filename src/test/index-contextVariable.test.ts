@@ -3,7 +3,7 @@ import { SequentialRequest } from "..";
 test("Context variable in body", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
     INITIAL_CONTEXT: {
       variable1: "deneme",
     },
@@ -12,12 +12,6 @@ test("Context variable in body", async () => {
   const operations: IOpRequest[] = [
     {
       POST: "/type/simple/binding",
-      BODY: {
-        test: "$.variable1",
-      },
-    },
-    {
-      POST: "/type/complex/binding",
       BODY: {
         test: "= $.variable1",
       },
@@ -40,15 +34,15 @@ test("Context variable in body", async () => {
   const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
-  expect(myFetch).toBeCalledTimes(2);
+  expect(myFetch).toBeCalledTimes(1);
 });
 
 test("Context variable in request headers", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
-    DEFAULT_HEADERS: {
-      GET: {
+    BASE_URL: `https://someurl.com`,
+    DEFAULT_GET: {
+      HEADERS: {
         "content-type": "= 'application/' & $.type",
       },
     },
@@ -62,7 +56,7 @@ test("Context variable in request headers", async () => {
     {
       GET: "/simpleBinding",
       HEADERS: {
-        "x-custom-header": "$.customHeaderValue",
+        "x-custom-header": "= $.customHeaderValue",
       },
     },
   ];

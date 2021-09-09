@@ -3,7 +3,7 @@ import { SequentialRequest } from "..";
 test("Two simple get request", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
   };
 
   const operations: IOpRequest[] = [

@@ -3,7 +3,7 @@ import { SequentialRequest } from "..";
 test("Check params", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
   };
 
   const operations: IOpRequest[] = [
@@ -42,13 +42,15 @@ test("Check params", async () => {
 test("Config headers params", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
-    DEFAULT_HEADERS: {
-      ALL: {
+    BASE_URL: `https://someurl.com`,
+    DEFAULT: {
+      HEADERS: {
         "content-type": "application/json",
         "x-overwrite-this": "old value",
       },
-      GET: {
+    },
+    DEFAULT_GET: {
+      HEADERS: {
         "x-get-header": "my custom get header",
         "x-overwrite-this": "new value",
       },
@@ -68,6 +70,7 @@ test("Config headers params", async () => {
     expect(url).toEqual("https://someurl.com/todos/1");
 
     expect(params).toEqual({
+      body: undefined,
       headers: {
         "content-type": "application/json",
         "x-custom-header": "test",

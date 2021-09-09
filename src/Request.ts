@@ -4,23 +4,18 @@ export abstract class Request {
   protected fetchHandler: OpRequestHandler | undefined;
   protected counter = 0;
 
-  protected readonly SIMPLE_BINDING = /^\$\.([.\w])+$/m;
-  protected readonly COMPLEX_BINDING = /^= .{1,}/m;
+  protected readonly BINDING_REGEX = /^= .{1,}/m;
   protected readonly handler;
 
   /**
    * @constructor
    * @param ***** Some Info about param
    */
-  protected constructor(
-    config: IOpConfig,
-    requests: IOpRequest[],
-    fetchHandler?: OpRequestHandler,
-  ) {
+  protected constructor(config: IOpConfig, requests: IOpRequest[], fetchHandler: OpRequestHandler) {
     this.config = config;
     this.requests = requests;
     this.fetchHandler = fetchHandler;
-    this.handler = this.fetchHandler || globalThis.fetch || fetch;
+    this.handler = this.fetchHandler;
   }
   /**
    * Some Info :)
@@ -35,5 +30,5 @@ export abstract class Request {
    * @returns Promise<{}>
    * @protected
    */
-  protected abstract handleRequest(currentContext: IOpContext): Promise<{}>;
+  protected abstract handleRequest(currentContext: IOpPlainObject): Promise<{}>;
 }
