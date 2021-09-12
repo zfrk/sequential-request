@@ -1,32 +1,32 @@
 interface IOpConfig {
-  INITIAL_CONTEXT?: IOpContext;
+  INITIAL_CONTEXT?: IOpPlainObject;
   VERSION?: string;
-  BASE?: string;
-  ENV?: {} | {}[];
-  DEFAULT_HEADERS?: {
-    ALL?: IOpRequestHeaders;
-    GET?: IOpRequestHeaders;
-    HEAD?: IOpRequestHeaders;
-    POST?: IOpRequestHeaders;
-    PUT?: IOpRequestHeaders;
-    DELETE?: IOpRequestHeaders;
-    PATCH?: IOpRequestHeaders;
-    OPTIONS?: IOpRequestHeaders;
-    CONNECT?: IOpRequestHeaders;
-    TRACE?: IOpRequestHeaders;
-  };
-  DEFAULT_DELAY?: Number;
+  BASE_URL?: string;
+  ENV?: IOpPlainObject | IOpPlainObject[];
+  DEFAULT?: Partial<IOpRequestBase>;
+  DEFAULT_GET?: Partial<IOpRequestGET>;
+  DEFAULT_HEAD?: Partial<IOpRequestHEAD>;
+  DEFAULT_POST?: Partial<IOpRequestPOST>;
+  DEFAULT_PUT?: Partial<IOpRequestPUT>;
+  DEFAULT_DELETE?: Partial<IOpRequestDELETE>;
+  DEFAULT_PATCH?: Partial<IOpRequestPATCH>;
+  DEFAULT_OPTIONS?: Partial<IOpRequestOPTIONS>;
+  DEFAULT_CONNECT?: Partial<IOpRequestCONNECT>;
+  DEFAULT_TRACE?: Partial<IOpRequestTRACE>;
 }
 
-interface IOpContext {
+interface IOpPlainObject {
   [id: string]: any;
 }
 
 interface IOpRequestBase {
   CHECK?: string;
+  DEBUG?: string | string[];
   HEADERS?: IOpRequestHeaders;
   DELAY?: Number;
-  SET?: string;
+  MERGE_PATH?: string | string[];
+  SAVEAS?: string;
+  SET?: IOpPlainObject;
 }
 
 interface IOpRequestGET extends IOpRequestBase {
@@ -39,12 +39,12 @@ interface IOpRequestHEAD extends IOpRequestBase {
 
 interface IOpRequestPOST extends IOpRequestBase {
   POST: string;
-  BODY?: {} | string;
+  BODY?: IOpPlainObject | string;
 }
 
 interface IOpRequestPUT extends IOpRequestBase {
   PUT: string;
-  BODY?: {} | string;
+  BODY?: IOpPlainObject | string;
 }
 
 interface IOpRequestDELETE extends IOpRequestBase {
@@ -53,7 +53,7 @@ interface IOpRequestDELETE extends IOpRequestBase {
 
 interface IOpRequestPATCH extends IOpRequestBase {
   PATCH: string;
-  BODY?: {} | string;
+  BODY?: IOpPlainObject | string;
 }
 
 interface IOpRequestOPTIONS extends IOpRequestBase {
@@ -71,18 +71,22 @@ interface IOpRequestTRACE extends IOpRequestBase {
 interface IOpRequestMethodData {
   method: OpRequestMethod;
   path: string;
-  body?: string;
+  body?: string | IOpPlainObject;
 }
 
 interface IOpRequestHeaders {
   [id: string]: string;
 }
 
-interface OpResponseHeaders {
+interface IOpResponseHeaders {
   [id: string]: string;
 }
 
-type OpRequest =
+type IOpMethodDefaultGenerator = {
+  [method in OpRequestMethod]?: (requestData: IOpRequest) => IOpRequest;
+};
+
+type IOpRequest =
   | IOpRequestGET
   | IOpRequestHEAD
   | IOpRequestPOST

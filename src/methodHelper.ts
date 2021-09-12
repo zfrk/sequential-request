@@ -1,51 +1,44 @@
-function isMethodGET(request: OpRequest): request is IOpRequestGET {
+export function isMethodGET(request: IOpRequest): request is IOpRequestGET {
   return !!(request as IOpRequestGET).GET;
 }
 
-function isMethodPOST(request: OpRequest): request is IOpRequestPOST {
+export function isMethodPOST(request: IOpRequest): request is IOpRequestPOST {
   return !!(request as IOpRequestPOST).POST;
 }
 
-function isMethodPUT(request: OpRequest): request is IOpRequestPUT {
+export function isMethodPUT(request: IOpRequest): request is IOpRequestPUT {
   return !!(request as IOpRequestPUT).PUT;
 }
 
-function isMethodDELETE(request: OpRequest): request is IOpRequestDELETE {
+export function isMethodDELETE(request: IOpRequest): request is IOpRequestDELETE {
   return !!(request as IOpRequestDELETE).DELETE;
 }
 
-function isMethodHEAD(request: OpRequest): request is IOpRequestHEAD {
+export function isMethodHEAD(request: IOpRequest): request is IOpRequestHEAD {
   return !!(request as IOpRequestHEAD).HEAD;
 }
 
-function isMethodPATCH(request: OpRequest): request is IOpRequestPATCH {
+export function isMethodPATCH(request: IOpRequest): request is IOpRequestPATCH {
   return !!(request as IOpRequestPATCH).PATCH;
 }
 
-function isMethodOPTIONS(request: OpRequest): request is IOpRequestOPTIONS {
+export function isMethodOPTIONS(request: IOpRequest): request is IOpRequestOPTIONS {
   return !!(request as IOpRequestOPTIONS).OPTIONS;
 }
 
-function isMethodCONNECT(request: OpRequest): request is IOpRequestCONNECT {
+export function isMethodCONNECT(request: IOpRequest): request is IOpRequestCONNECT {
   return !!(request as IOpRequestCONNECT).CONNECT;
 }
 
-function isMethodTRACE(request: OpRequest): request is IOpRequestTRACE {
+export function isMethodTRACE(request: IOpRequest): request is IOpRequestTRACE {
   return !!(request as IOpRequestTRACE).TRACE;
 }
 
-export function getRequestMethod(
-  request: OpRequest,
-  replacer: OpContextReplacer,
-): IOpRequestMethodData {
+export function getRequestMethod(request: IOpRequest): IOpRequestMethodData {
   if (isMethodPOST(request)) {
-    const body =
-      typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY, replacer);
-    return { method: "POST", path: request.POST, body };
+    return { method: "POST", path: request.POST, body: request.BODY };
   } else if (isMethodPUT(request)) {
-    const body =
-      typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY, replacer);
-    return { method: "PUT", path: request.PUT, body };
+    return { method: "PUT", path: request.PUT, body: request.BODY };
   } else if (isMethodDELETE(request)) {
     return { method: "DELETE", path: request.DELETE };
   } else if (isMethodHEAD(request)) {
@@ -55,9 +48,7 @@ export function getRequestMethod(
   } else if (isMethodCONNECT(request)) {
     return { method: "CONNECT", path: request.CONNECT };
   } else if (isMethodPATCH(request)) {
-    const body =
-      typeof request.BODY === "string" ? request.BODY : JSON.stringify(request.BODY, replacer);
-    return { method: "PATCH", path: request.PATCH, body };
+    return { method: "PATCH", path: request.PATCH, body: request.BODY };
   } else if (isMethodTRACE(request)) {
     return { method: "TRACE", path: request.TRACE };
   }

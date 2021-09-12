@@ -1,4 +1,4 @@
-import  { SequentialRequest } from "..";
+import { SequentialRequest } from "..";
 
 const myFetch = jest.fn(() =>
   Promise.resolve({
@@ -20,17 +20,17 @@ beforeEach(() => {
 test("Without initial context", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
     },
   ];
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
-  
+  const seqreq = new SequentialRequest(config, operations, myFetch);
+
   const response = await seqreq.execute();
 
   expect(response).toEqual({
@@ -42,7 +42,7 @@ test("Without initial context", async () => {
 test("Deep initial context", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
     INITIAL_CONTEXT: {
       test: "deneme",
       a: {
@@ -51,14 +51,14 @@ test("Deep initial context", async () => {
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
     },
   ];
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
-  const response = await  await seqreq.execute();
+  const seqreq = new SequentialRequest(config, operations, myFetch);
+  const response = await await seqreq.execute();
 
   expect(response).toEqual({
     test: "deneme",
@@ -73,19 +73,19 @@ test("Deep initial context", async () => {
 test("Overwrite existing data", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
     INITIAL_CONTEXT: {
       id: "xyz",
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
     },
   ];
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
   const response = await seqreq.execute();
 
   expect(response).toEqual({
