@@ -1,12 +1,12 @@
-import  { SequentialRequest } from "..";
+import { SequentialRequest } from "..";
 
 test("Check params", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
+    BASE_URL: `https://someurl.com`,
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
       HEADERS: {
@@ -33,7 +33,7 @@ test("Check params", async () => {
     });
   });
 
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(1);
@@ -42,20 +42,22 @@ test("Check params", async () => {
 test("Config headers params", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
-    BASE: `https://someurl.com`,
-    DEFAULT_HEADERS: {
-      ALL: {
+    BASE_URL: `https://someurl.com`,
+    DEFAULT: {
+      HEADERS: {
         "content-type": "application/json",
         "x-overwrite-this": "old value",
       },
-      GET: {
+    },
+    DEFAULT_GET: {
+      HEADERS: {
         "x-get-header": "my custom get header",
         "x-overwrite-this": "new value",
       },
     },
   };
 
-  const operations: OpRequest[] = [
+  const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
       HEADERS: {
@@ -68,6 +70,7 @@ test("Config headers params", async () => {
     expect(url).toEqual("https://someurl.com/todos/1");
 
     expect(params).toEqual({
+      body: undefined,
       headers: {
         "content-type": "application/json",
         "x-custom-header": "test",
@@ -86,7 +89,7 @@ test("Config headers params", async () => {
       status: 200,
     });
   });
-  const seqreq = new SequentialRequest( config,operations,myFetch);
+  const seqreq = new SequentialRequest(config, operations, myFetch);
 
   await seqreq.execute();
   expect(myFetch).toBeCalledTimes(1);

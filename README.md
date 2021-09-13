@@ -2,7 +2,7 @@
 
 ### Status
 
-![CI Status](https://github.com/zfrk/sequential-request/actions/workflows/ciact.yml/badge.svg)
+![CI Status](https://github.com/packagely/sequential-request/actions/workflows/ciact.yml/badge.svg)
 
 ## Usage
 
@@ -29,7 +29,7 @@ A sample file would look like this:
 - VERSION: 0.0.1
   HEADERS:
     GET:
-      content-type: application/json
+      Accept: application/json
 
 - GET: https://jsonplaceholder.typicode.com/todos/3
 
