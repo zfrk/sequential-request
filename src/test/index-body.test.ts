@@ -1,3 +1,4 @@
+import { Headers } from "node-fetch";
 import { SequentialRequest } from "..";
 
 test("Two simple get request", async () => {
@@ -23,10 +24,10 @@ test("Two simple get request", async () => {
     expect(params.body).toEqual('{"test":"deneme"}');
 
     return Promise.resolve({
-      json: () => Promise.resolve({}),
-      headers: {
+      text: () => Promise.resolve("{}"),
+      headers: new Headers({
         "content-type": "application/json",
-      },
+      }),
       ok: true,
       status: 200,
     });

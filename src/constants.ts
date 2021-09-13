@@ -8,7 +8,7 @@ export const DEFAULT_CONFIG: Required<IOpConfig> = {
     DELAY: 1000,
     DEBUG: [],
     HEADERS: {},
-    MERGE_PATH: "= $.RESPONSE",
+    ASSIGN: "= $.RESPONSE",
   },
   DEFAULT_CONNECT: {},
   DEFAULT_DELETE: {},
