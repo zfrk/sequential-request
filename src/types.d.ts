@@ -23,8 +23,8 @@ interface IOpRequestBase {
   CHECK?: string;
   DEBUG?: string | string[];
   HEADERS?: IOpRequestHeaders;
-  DELAY?: Number;
-  MERGE_PATH?: string | string[];
+  DELAY?: number;
+  ASSIGN?: string | IOpPlainObject;
   SAVEAS?: string;
   SET?: IOpPlainObject;
 }

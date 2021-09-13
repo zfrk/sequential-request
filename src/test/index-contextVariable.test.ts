@@ -1,3 +1,4 @@
+import { Headers } from "node-fetch";
 import { SequentialRequest } from "..";
 
 test("Context variable in body", async () => {
@@ -22,10 +23,10 @@ test("Context variable in body", async () => {
     expect(params.body).toEqual('{"test":"deneme"}');
 
     return Promise.resolve({
-      json: () => Promise.resolve({}),
-      headers: {
+      text: () => Promise.resolve("{}"),
+      headers: new Headers({
         "content-type": "application/json",
-      },
+      }),
       ok: true,
       status: 200,
     });
@@ -68,10 +69,10 @@ test("Context variable in request headers", async () => {
     });
 
     return Promise.resolve({
-      json: () => Promise.resolve({}),
-      headers: {
+      text: () => Promise.resolve("{}"),
+      headers: new Headers({
         "content-type": "application/json",
-      },
+      }),
       ok: true,
       status: 200,
     });

@@ -39,17 +39,37 @@ export class SequentialRequest extends Request {
     }
 
     const url = `${this.config.BASE_URL}${path}`;
-    const headers = this.bindHeaders(methodBasedConfig.HEADERS || {}, replacer);
+    const headers = SequentialRequest.bindHeaders(methodBasedConfig.HEADERS || {}, replacer);
 
     const params = {
       method,
       body: stringBody,
       headers,
     };
+    console.log({ url, params });
 
-    const responseContext = await this.handler(url, params).then((res) => res.json());
+    const response: Response = await this.handler(url, params);
+    let responseContext: IOpPlainObject = {};
+    let mergeContext: IOpPlainObject = {};
+    if (methodBasedConfig.ASSIGN) {
+      try {
+        responseContext = JSON.parse(await response.text());
+        mergeContext = { ...responseContext };
+      } catch (error) {
+        mergeContext = {};
+      }
+    }
 
-    return this.handleRequest({ ...currentContext, ...responseContext });
+    mergeContext.RESPONSE = {
+      HEADERS: SequentialRequest.convertHeaderToObject(response.headers),
+      BODY: responseContext,
+      STATUS_CODE: response.status,
+      STATUS_TEXT: response.statusText,
+      STATUS_OK: response.ok,
+    };
+    await new Promise((resolve) => setTimeout(resolve, methodBasedConfig.DELAY));
+
+    return this.handleRequest({ ...currentContext, ...mergeContext });
   }
 
   private createReplacer(context: IOpPlainObject, environment: {}) {
@@ -68,7 +88,7 @@ export class SequentialRequest extends Request {
     };
   }
 
-  private bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
+  private static bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
     return Object.entries(headers)
       .map(([key, value]) => [key, replacer(key, value)])
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -81,5 +101,13 @@ export class SequentialRequest extends Request {
     const selected = this.config[key] as IOpRequest;
     const merged = mergeDeepRight(this.config.DEFAULT || {}, selected) as any;
     return mergeDeepRight(merged || {}) as (requestData: IOpRequest) => IOpRequest;
+  }
+
+  private static convertHeaderToObject(header: Headers) {
+    const result: IOpResponseHeaders = {};
+    header.forEach((value, key) => {
+      result[(key + "").toUpperCase()] = value;
+    });
+    return result;
   }
 }
