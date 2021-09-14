@@ -3,6 +3,7 @@ import { mergeDeepRight } from "ramda";
 import { Request } from "./Request";
 import { getRequestMethod } from "./methodHelper";
 import { DEFAULT_CONFIG } from "./constants";
+import * as setCookieParser from "set-cookie-parser";
 export class SequentialRequest extends Request {
   constructor(config: IOpConfig, requests: IOpRequest[], fetchHandler: OpRequestHandler) {
     super(mergeDeepRight(DEFAULT_CONFIG, config) as IOpConfig, requests, fetchHandler);
@@ -60,8 +61,17 @@ export class SequentialRequest extends Request {
       }
     }
 
+    const cookieString = response.headers.get("set-cookie");
+    const cookies = setCookieParser
+      .splitCookiesString(cookieString || "")
+      .map((x: string) => setCookieParser.parseString(x))
+      .reduce((acc, x) => ({ ...acc, [x.name]: x }), {});
+
+    console.log({ cookies });
+
     mergeContext.RESPONSE = {
       HEADERS: SequentialRequest.convertHeaderToObject(response.headers),
+      COOKIES: cookies,
       BODY: responseContext,
       STATUS_CODE: response.status,
       STATUS_TEXT: response.statusText,

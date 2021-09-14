@@ -27,11 +27,22 @@ A sample file would look like this:
 
 ```yml
 - VERSION: 0.0.1
-  HEADERS:
-    GET:
+  BASE_URL: https://jsonplaceholder.typicode.com
+  DEFAULT:
+    HEADERS:
+      Cache-Control: no-cache
+  DEFAULT_GET:
+    HEADERS:
       Accept: application/json
 
-- GET: https://jsonplaceholder.typicode.com/todos/3
+- GET: /todos/3
 
-- GET: https://jsonplaceholder.typicode.com/posts/1
+- GET: /posts/1
+
+- POST: https://example.com/api/test
+  HEADERS:
+    Content-Type: application/json
+  BODY:
+    property1: data1
+    property2: data2
 ```
