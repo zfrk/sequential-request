@@ -3,6 +3,7 @@ import { mergeDeepRight } from "ramda";
 import { Request } from "./Request";
 import { getRequestMethod } from "./methodHelper";
 import { DEFAULT_CONFIG } from "./constants";
+import * as setCookieParser from "set-cookie-parser";
 export class SequentialRequest extends Request {
   constructor(config: IOpConfig, requests: IOpRequest[], fetchHandler: OpRequestHandler) {
     super(mergeDeepRight(DEFAULT_CONFIG, config) as IOpConfig, requests, fetchHandler);
@@ -39,17 +40,46 @@ export class SequentialRequest extends Request {
     }
 
     const url = `${this.config.BASE_URL}${path}`;
-    const headers = this.bindHeaders(methodBasedConfig.HEADERS || {}, replacer);
+    const headers = SequentialRequest.bindHeaders(methodBasedConfig.HEADERS || {}, replacer);
 
     const params = {
       method,
       body: stringBody,
       headers,
     };
+    console.log({ url, params });
 
-    const responseContext = await this.handler(url, params).then((res) => res.json());
+    const response: Response = await this.handler(url, params);
+    let responseContext: IOpPlainObject = {};
+    let mergeContext: IOpPlainObject = {};
+    if (methodBasedConfig.ASSIGN) {
+      try {
+        responseContext = JSON.parse(await response.text());
+        mergeContext = { ...responseContext };
+      } catch (error) {
+        mergeContext = {};
+      }
+    }
 
-    return this.handleRequest({ ...currentContext, ...responseContext });
+    const cookieString = response.headers.get("set-cookie");
+    const cookies = setCookieParser
+      .splitCookiesString(cookieString || "")
+      .map((x: string) => setCookieParser.parseString(x))
+      .reduce((acc, x) => ({ ...acc, [x.name]: x }), {});
+
+    console.log({ cookies });
+
+    mergeContext.RESPONSE = {
+      HEADERS: SequentialRequest.convertHeaderToObject(response.headers),
+      COOKIES: cookies,
+      BODY: responseContext,
+      STATUS_CODE: response.status,
+      STATUS_TEXT: response.statusText,
+      STATUS_OK: response.ok,
+    };
+    await new Promise((resolve) => setTimeout(resolve, methodBasedConfig.DELAY));
+
+    return this.handleRequest({ ...currentContext, ...mergeContext });
   }
 
   private createReplacer(context: IOpPlainObject, environment: {}) {
@@ -68,7 +98,7 @@ export class SequentialRequest extends Request {
     };
   }
 
-  private bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
+  private static bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
     return Object.entries(headers)
       .map(([key, value]) => [key, replacer(key, value)])
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
@@ -81,5 +111,13 @@ export class SequentialRequest extends Request {
     const selected = this.config[key] as IOpRequest;
     const merged = mergeDeepRight(this.config.DEFAULT || {}, selected) as any;
     return mergeDeepRight(merged || {}) as (requestData: IOpRequest) => IOpRequest;
+  }
+
+  private static convertHeaderToObject(header: Headers) {
+    const result: IOpResponseHeaders = {};
+    header.forEach((value, key) => {
+      result[(key + "").toUpperCase()] = value;
+    });
+    return result;
   }
 }

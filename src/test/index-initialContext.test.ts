@@ -1,13 +1,16 @@
+import { Headers } from "node-fetch";
 import { SequentialRequest } from "..";
 
 const myFetch = jest.fn(() =>
   Promise.resolve({
-    json: () =>
-      Promise.resolve({
-        id: 1,
-        text: "lorem ipsum",
-      }),
-    headers: {},
+    text: () =>
+      Promise.resolve(
+        JSON.stringify({
+          id: 1,
+          text: "lorem ipsum",
+        }),
+      ),
+    headers: new Headers({}),
     ok: true,
     status: 200,
   }),
@@ -33,7 +36,7 @@ test("Without initial context", async () => {
 
   const response = await seqreq.execute();
 
-  expect(response).toEqual({
+  expect(response).toMatchObject({
     id: 1,
     text: "lorem ipsum",
   });
@@ -60,7 +63,7 @@ test("Deep initial context", async () => {
   const seqreq = new SequentialRequest(config, operations, myFetch);
   const response = await await seqreq.execute();
 
-  expect(response).toEqual({
+  expect(response).toMatchObject({
     test: "deneme",
     a: {
       b: "c",
@@ -88,7 +91,7 @@ test("Overwrite existing data", async () => {
   const seqreq = new SequentialRequest(config, operations, myFetch);
   const response = await seqreq.execute();
 
-  expect(response).toEqual({
+  expect(response).toMatchObject({
     id: 1,
     text: "lorem ipsum",
   });

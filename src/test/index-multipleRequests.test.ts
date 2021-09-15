@@ -1,3 +1,4 @@
+import { Headers } from "node-fetch";
 import { SequentialRequest } from "..";
 
 test("Two simple get request", async () => {
@@ -19,10 +20,13 @@ test("Two simple get request", async () => {
     const id = url.split("query")[1];
 
     return Promise.resolve({
-      json: () =>
-        Promise.resolve({
-          [id]: `myID: ${id}`,
-        }),
+      text: () =>
+        Promise.resolve(
+          JSON.stringify({
+            [id]: `myID: ${id}`,
+          }),
+        ),
+      headers: new Headers(),
     });
   });
 
@@ -30,5 +34,5 @@ test("Two simple get request", async () => {
 
   const context = await seqreq.execute();
   expect(myFetch).toBeCalledTimes(2);
-  expect(context).toEqual({ _1: "myID: _1", _2: "myID: _2" });
+  expect(context).toMatchObject({ _1: "myID: _1", _2: "myID: _2" });
 });
