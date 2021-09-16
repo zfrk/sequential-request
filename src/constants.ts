@@ -8,7 +8,7 @@ export const DEFAULT_CONFIG: Required<IOpConfig> = {
     DELAY: 1000,
     DEBUG: [],
     HEADERS: {},
-    ASSIGN: "= $.RESPONSE.BODY",
+    ASSIGN: {},
   },
   DEFAULT_CONNECT: {},
   DEFAULT_DELETE: {},
