@@ -111,3 +111,13 @@ declare type OpRequestMethod =
   | "GET";
 
 declare type OpContextReplacer = (key: string, value: any) => any;
+
+declare type OpLoggerTypes =
+  | "CONTEXT"
+  | "LOG"
+  | "REQ_HEADERS"
+  | "REQ_BODY"
+  | "RES_HEADERS"
+  | "RES_BODY"
+  | "STATUS"
+  | "TITLE";

@@ -29,6 +29,7 @@ test("Without initial context", async () => {
   const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
+      ASSIGN: "= $.RESPONSE.BODY",
     },
   ];
 
@@ -36,9 +37,10 @@ test("Without initial context", async () => {
 
   const response = await seqreq.execute();
 
-  expect(response).toMatchObject({
+  expect(response).toEqual({
     id: 1,
     text: "lorem ipsum",
+    RESPONSE: expect.objectContaining({ STATUS_CODE: 200 }),
   });
 });
 
@@ -57,19 +59,21 @@ test("Deep initial context", async () => {
   const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
+      ASSIGN: "= $.RESPONSE.BODY",
     },
   ];
 
   const seqreq = new SequentialRequest(config, operations, myFetch);
   const response = await await seqreq.execute();
 
-  expect(response).toMatchObject({
+  expect(response).toEqual({
     test: "deneme",
     a: {
       b: "c",
     },
     id: 1,
     text: "lorem ipsum",
+    RESPONSE: expect.objectContaining({ STATUS_CODE: 200 }),
   });
 });
 
@@ -85,14 +89,16 @@ test("Overwrite existing data", async () => {
   const operations: IOpRequest[] = [
     {
       GET: "/todos/1",
+      ASSIGN: "= $.RESPONSE.BODY",
     },
   ];
 
   const seqreq = new SequentialRequest(config, operations, myFetch);
   const response = await seqreq.execute();
 
-  expect(response).toMatchObject({
+  expect(response).toEqual({
     id: 1,
     text: "lorem ipsum",
+    RESPONSE: expect.objectContaining({ STATUS_CODE: 200 }),
   });
 });
