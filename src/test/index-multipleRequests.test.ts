@@ -5,6 +5,9 @@ test("Two simple get request", async () => {
   const config: IOpConfig = {
     VERSION: "0.0.1",
     BASE_URL: `https://someurl.com`,
+    DEFAULT: {
+      ASSIGN: "= $.RESPONSE.BODY",
+    },
   };
 
   const operations: IOpRequest[] = [
@@ -34,5 +37,9 @@ test("Two simple get request", async () => {
 
   const context = await seqreq.execute();
   expect(myFetch).toBeCalledTimes(2);
-  expect(context).toMatchObject({ _1: "myID: _1", _2: "myID: _2" });
+  expect(context).toEqual({
+    _1: "myID: _1",
+    _2: "myID: _2",
+    RESPONSE: expect.objectContaining({}),
+  });
 });

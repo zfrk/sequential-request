@@ -18,7 +18,7 @@
     "preversion": "npm run lint",
     "test": "jest --config jestconfig.json",
     "test:watch": "jest --config jestconfig.json --watch",
-    "test:yaml": "seqreq tmp/npm_test/*.yml",
+    "test:yaml": "DEBUG=TITLE seqreq tmp/npm_test/*.yml",
     "version": "npm run format && git add -A src"
   },
   "files": [
@@ -43,6 +43,7 @@
   "homepage": "https://github.com/packagely/sequential-request#readme",
   "devDependencies": {
     "@types/clear": "^0.1.2",
+    "@types/debug": "^4.1.7",
     "@types/jest": "^27.0.1",
     "@types/js-yaml": "^4.0.3",
     "@types/node-fetch": "^2.5.12",
@@ -60,6 +61,7 @@
   },
   "dependencies": {
     "clear": "^0.1.0",
+    "debug": "^4.3.2",
     "js-yaml": "^4.1.0",
     "jsonata": "^1.8.5",
     "node-fetch": "^2.6.1",
