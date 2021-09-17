@@ -4,6 +4,7 @@ import { Request } from "./Request";
 import { getRequestMethod } from "./methodHelper";
 import { DEFAULT_CONFIG } from "./constants";
 import * as setCookieParser from "set-cookie-parser";
+import deep_update from "./utils/deep_update";
 export class SequentialRequest extends Request {
   constructor(config: IOpConfig, requests: IOpRequest[], fetchHandler: OpRequestHandler) {
     super(mergeDeepRight(DEFAULT_CONFIG, config) as IOpConfig, requests, fetchHandler);
@@ -67,8 +68,6 @@ export class SequentialRequest extends Request {
       .map((x: string) => setCookieParser.parseString(x))
       .reduce((acc, x) => ({ ...acc, [x.name]: x }), {});
 
-    console.log({ cookies });
-
     mergeContext.RESPONSE = {
       HEADERS: SequentialRequest.convertHeaderToObject(response.headers),
       COOKIES: cookies,
@@ -77,9 +76,23 @@ export class SequentialRequest extends Request {
       STATUS_TEXT: response.statusText,
       STATUS_OK: response.ok,
     };
+    console.log({ cookies, response: mergeContext.RESPONSE });
+
+    const afterResponseContext = { ...currentContext, ...mergeContext };
+
+    let replacedContext: any = {};
+    if (methodBasedConfig.ASSIGN) {
+      const responseReplacer = this.createReplacer(afterResponseContext, {});
+      replacedContext = deep_update(
+        {
+          target: methodBasedConfig.ASSIGN,
+        },
+        responseReplacer,
+      ).target;
+    }
     await new Promise((resolve) => setTimeout(resolve, methodBasedConfig.DELAY));
 
-    return this.handleRequest({ ...currentContext, ...mergeContext });
+    return this.handleRequest({ ...afterResponseContext, ...replacedContext });
   }
 
   private createReplacer(context: IOpPlainObject, environment: {}) {
