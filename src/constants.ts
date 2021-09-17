@@ -6,7 +6,7 @@ export const DEFAULT_CONFIG: Required<IOpConfig> = {
   DEFAULT: {
     CHECK: "= $.RESPONSE.STATUS_CODE < 300",
     DELAY: 1000,
-    DEBUG: [],
+    DEBUG: ["STATUS", "TITLE"],
     HEADERS: {},
     ASSIGN: {},
   },
