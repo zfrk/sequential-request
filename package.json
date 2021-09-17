@@ -18,7 +18,7 @@
     "preversion": "npm run lint",
     "test": "jest --config jestconfig.json",
     "test:watch": "jest --config jestconfig.json --watch",
-    "test:yaml": "DEBUG=TITLE seqreq tmp/npm_test/*.yml",
+    "test:yaml": "seqreq tmp/npm_test/*.yml",
     "version": "npm run format && git add -A src"
   },
   "files": [

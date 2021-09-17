@@ -34,7 +34,11 @@ export class SequentialRequest extends Request {
     const configGenerator = this.getMethodBasedDefaultGenerator(method);
 
     const methodBasedConfig = configGenerator(requestData);
-    // Logger.enable([]);
+    const debugFlags: OpLoggerTypes[] = ([] as OpLoggerTypes[]).concat(
+      (methodBasedConfig.DEBUG as OpLoggerTypes[]) || [],
+    );
+
+    Logger.enable(debugFlags);
     Logger.title(method, url);
 
     let stringBody;

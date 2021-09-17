@@ -7,6 +7,7 @@ import { hideBin } from "yargs/helpers";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
 import clear from "clear";
+import Logger from "../Logger";
 
 clear();
 
@@ -25,8 +26,7 @@ async function main(params: any) {
     const seqreq = new SequentialRequest(config, requests, fetch);
     const resultContext = await seqreq.execute();
 
-    // tslint:disable-next-line:no-console
-    console.log(resultContext);
+    Logger.context(resultContext);
   } catch (e) {
     // tslint:disable-next-line:no-console
     console.error(e);
