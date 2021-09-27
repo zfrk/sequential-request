@@ -46,3 +46,14 @@ A sample file would look like this:
     property1: data1
     property2: data2
 ```
+
+## DEBUG types
+
+CONTEXT
+REQ_BODY
+REQ_HEADERS
+RES_BODY
+RES_HEADERS
+STATUS
+TITLE
+LOG
