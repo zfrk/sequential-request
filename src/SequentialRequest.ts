@@ -28,7 +28,7 @@ export class SequentialRequest extends Request {
 
     const replacer = this.createReplacer(currentContext, {});
     const { method, path, body } = getRequestMethod(requestData);
-    const calculatedPath = deep_update({ target: path }, replacer).target;
+    const calculatedPath = SequentialRequest.replaceVariables(path, replacer);
     const url = `${this.config.BASE_URL}${calculatedPath}`;
 
     const configGenerator = this.getMethodBasedDefaultGenerator(method);
@@ -94,18 +94,28 @@ export class SequentialRequest extends Request {
     let replacedContext: any = {};
     if (methodBasedConfig.ASSIGN) {
       const responseReplacer = this.createReplacer(afterResponseContext, {});
-      replacedContext = deep_update(
-        {
-          target: methodBasedConfig.ASSIGN,
-        },
+      replacedContext = SequentialRequest.replaceVariables(
+        methodBasedConfig.ASSIGN,
         responseReplacer,
-      ).target;
+      );
     }
     await new Promise((resolve) => setTimeout(resolve, methodBasedConfig.DELAY));
 
     const finalContext = { ...afterResponseContext, ...replacedContext };
 
     Logger.context(finalContext);
+
+    if (methodBasedConfig.CHECK !== undefined) {
+      const checkReplacer = this.createReplacer(afterResponseContext, {});
+      const checkResult = SequentialRequest.replaceVariables(
+        methodBasedConfig.CHECK,
+        checkReplacer,
+      );
+      if (checkResult === false) {
+        Logger.verbose("Check is not satisfied: %s", methodBasedConfig.CHECK);
+        return finalContext;
+      }
+    }
     return this.handleRequest(finalContext);
   }
 
@@ -123,6 +133,10 @@ export class SequentialRequest extends Request {
       }
       return v;
     };
+  }
+
+  private static replaceVariables(data: any, replacer: OpContextReplacer) {
+    return deep_update({ target: data }, replacer).target;
   }
 
   private static bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {
