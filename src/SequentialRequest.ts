@@ -27,7 +27,8 @@ export class SequentialRequest extends Request {
     }
 
     const replacer = this.createReplacer(currentContext, {});
-    const { method, path, body } = getRequestMethod(requestData);
+    const extracted = getRequestMethod(requestData);
+    const { method, path, body } = SequentialRequest.replaceVariables(extracted, replacer);
     const calculatedPath = SequentialRequest.replaceVariables(path, replacer);
     const url = `${this.config.BASE_URL}${calculatedPath}`;
 
@@ -45,7 +46,7 @@ export class SequentialRequest extends Request {
     if (typeof body === "string") {
       stringBody = body;
     } else if (typeof body === "object") {
-      stringBody = JSON.stringify(body, replacer);
+      stringBody = JSON.stringify(body);
     }
 
     const headers = SequentialRequest.bindHeaders(methodBasedConfig.HEADERS || {}, replacer);
