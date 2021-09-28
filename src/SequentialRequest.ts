@@ -5,6 +5,7 @@ import { getRequestMethod } from "./methodHelper";
 import { DEFAULT_CONFIG } from "./constants";
 import * as setCookieParser from "set-cookie-parser";
 import deep_update from "./utils/deep_update";
+import Logger from "./Logger";
 export class SequentialRequest extends Request {
   constructor(config: IOpConfig, requests: IOpRequest[], fetchHandler: OpRequestHandler) {
     super(mergeDeepRight(DEFAULT_CONFIG, config) as IOpConfig, requests, fetchHandler);
@@ -26,21 +27,28 @@ export class SequentialRequest extends Request {
     }
 
     const replacer = this.createReplacer(currentContext, {});
-
-    const { method, path, body } = getRequestMethod(requestData);
+    const extracted = getRequestMethod(requestData);
+    const { method, path, body } = SequentialRequest.replaceVariables(extracted, replacer);
+    const calculatedPath = SequentialRequest.replaceVariables(path, replacer);
+    const url = `${this.config.BASE_URL}${calculatedPath}`;
 
     const configGenerator = this.getMethodBasedDefaultGenerator(method);
 
     const methodBasedConfig = configGenerator(requestData);
+    const debugFlags: OpLoggerTypes[] = ([] as OpLoggerTypes[]).concat(
+      (methodBasedConfig.DEBUG as OpLoggerTypes[]) || [],
+    );
+
+    Logger.enable(debugFlags);
+    Logger.title(method, url);
 
     let stringBody;
     if (typeof body === "string") {
       stringBody = body;
     } else if (typeof body === "object") {
-      stringBody = JSON.stringify(body, replacer);
+      stringBody = JSON.stringify(body);
     }
 
-    const url = `${this.config.BASE_URL}${path}`;
     const headers = SequentialRequest.bindHeaders(methodBasedConfig.HEADERS || {}, replacer);
 
     const params = {
@@ -48,18 +56,19 @@ export class SequentialRequest extends Request {
       body: stringBody,
       headers,
     };
-    console.log({ url, params });
 
     const response: Response = await this.handler(url, params);
-    let responseContext: IOpPlainObject = {};
-    let mergeContext: IOpPlainObject = {};
-    if (methodBasedConfig.ASSIGN) {
-      try {
-        responseContext = JSON.parse(await response.text());
-        mergeContext = { ...responseContext };
-      } catch (error) {
-        mergeContext = {};
-      }
+    Logger.status(response.status, response.statusText);
+    Logger.requestHeaders(headers);
+    Logger.requestBody(stringBody);
+
+    const responseText = await response.text();
+    let responseBody: IOpPlainObject | string = {};
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (error) {
+      responseBody = responseText;
     }
 
     const cookieString = response.headers.get("set-cookie");
@@ -68,31 +77,47 @@ export class SequentialRequest extends Request {
       .map((x: string) => setCookieParser.parseString(x))
       .reduce((acc, x) => ({ ...acc, [x.name]: x }), {});
 
-    mergeContext.RESPONSE = {
+    const responseContext = {
       HEADERS: SequentialRequest.convertHeaderToObject(response.headers),
       COOKIES: cookies,
-      BODY: responseContext,
+      BODY: responseBody,
       STATUS_CODE: response.status,
       STATUS_TEXT: response.statusText,
       STATUS_OK: response.ok,
     };
-    console.log({ cookies, response: mergeContext.RESPONSE });
 
-    const afterResponseContext = { ...currentContext, ...mergeContext };
+    Logger.responseHeaders(responseContext.HEADERS);
+    Logger.verbose("Cookies: %O", cookies);
+    Logger.responseBody(responseBody);
+
+    const afterResponseContext = { ...currentContext, RESPONSE: responseContext };
 
     let replacedContext: any = {};
     if (methodBasedConfig.ASSIGN) {
       const responseReplacer = this.createReplacer(afterResponseContext, {});
-      replacedContext = deep_update(
-        {
-          target: methodBasedConfig.ASSIGN,
-        },
+      replacedContext = SequentialRequest.replaceVariables(
+        methodBasedConfig.ASSIGN,
         responseReplacer,
-      ).target;
+      );
     }
     await new Promise((resolve) => setTimeout(resolve, methodBasedConfig.DELAY));
 
-    return this.handleRequest({ ...afterResponseContext, ...replacedContext });
+    const finalContext = { ...afterResponseContext, ...replacedContext };
+
+    Logger.context(finalContext);
+
+    if (methodBasedConfig.CHECK !== undefined) {
+      const checkReplacer = this.createReplacer(afterResponseContext, {});
+      const checkResult = SequentialRequest.replaceVariables(
+        methodBasedConfig.CHECK,
+        checkReplacer,
+      );
+      if (checkResult === false) {
+        Logger.verbose("Check is not satisfied: %s", methodBasedConfig.CHECK);
+        return finalContext;
+      }
+    }
+    return this.handleRequest(finalContext);
   }
 
   private createReplacer(context: IOpPlainObject, environment: {}) {
@@ -109,6 +134,10 @@ export class SequentialRequest extends Request {
       }
       return v;
     };
+  }
+
+  private static replaceVariables(data: any, replacer: OpContextReplacer) {
+    return deep_update({ target: data }, replacer).target;
   }
 
   private static bindHeaders(headers: IOpRequestHeaders, replacer: OpContextReplacer) {

@@ -38,9 +38,10 @@ test("Assign command", async () => {
   const seqreq = new SequentialRequest(config, operations, myFetch);
 
   const response = await seqreq.execute();
-  expect(response).toMatchObject({
+  expect(response).toEqual({
     variable1: "deneme",
     assignedVariable: "responseText",
+    RESPONSE: expect.objectContaining({ STATUS_CODE: 200 }),
   });
 });
 
@@ -79,8 +80,9 @@ test("Assign string value deeply", async () => {
   const seqreq = new SequentialRequest(config, operations, myFetch);
 
   const response = await seqreq.execute();
-  expect(response).toMatchObject({
+  expect(response).toEqual({
     variable1: "deneme",
     responseValue: "responseText",
+    RESPONSE: expect.objectContaining({ STATUS_CODE: 200 }),
   });
 });
